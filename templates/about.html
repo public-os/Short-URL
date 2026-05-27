@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+
+<body class="bg-zinc-900 min-h-screen">
+
+ <nav class="bg-zinc-700 text-white shadow-md">
+        <div class="max-w-7xl mx-auto px-6 py-2">
+            <div class="flex justify-between items-center">
+                <a href="index.html" class="text-2xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-link text-yellow-400"></i>
+                    URL Shortener
+                </a>
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="index.html" class="hover:text-yellow-300 transition">Home</a>
+                    <a href="about.html" class="hover:text-yellow-300 transition">About</a>
+                </div>
+                <button id="menu-btn" class="md:hidden text-lg">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden mt-4 bg-zinc-800 rounded-xl p-4 space-y-3">
+                <a href="index.html" class="block hover:text-yellow-300">Home</a>
+                <a href="about.html" class="block hover:text-yellow-300">About</a>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Main Content -->
+    <main class="flex justify-center items-center px-4 py-12">
+
+        <div
+            class="w-full max-w-md bg-zinc-700 shadow-xl rounded-2xl p-6 md:p-8">
+
+            <h2
+                class="text-3xl font-bold text-center text-white mb-6">
+                About URL Shortener
+            </h2>
+
+            <!-- Input -->
+            <div class="space-y-4">
+
+                <p class="text-zinc-300 text-center">
+                    URL Shortener is a simple and efficient tool that allows you to shorten long URLs into more manageable and shareable links. Whether you're sharing links on social media, in emails, or through messaging apps, URL Shortener helps you create concise URLs that are easier to remember and share.
+                </p>
+
+                <p class="text-zinc-300 text-center">
+                    Our service is designed to be fast, reliable, and user-friendly. With just a few clicks, you can transform lengthy URLs into short, clean links that are perfect for any platform. We also provide analytics to track the performance of your shortened URLs, giving you insights into how many clicks your links receive and where they are coming from.
+                </p>
+
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+
+        // Mobile menu toggle
+        const menuBtn = document.getElementById("menu-btn");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+        });
+
+    </script>
+
+</body>
+</html>
