@@ -3,12 +3,11 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Railway persistent storage path
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./shortener.db")
-
-# For Railway - use /data directory (persistent)
+# Railway uses /data for persistent storage
 if os.getenv("RAILWAY_ENVIRONMENT"):
     DATABASE_URL = "sqlite:////data/shortener.db"
+else:
+    DATABASE_URL = "sqlite:///./shortener.db"
 
 engine = create_engine(
     DATABASE_URL,

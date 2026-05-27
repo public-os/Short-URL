@@ -1,533 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>URL Shortener - Smart URL Validation</title>
-
-    <!-- Tailwind CSS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Font Awesome -->
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-    <style>
-        /* Custom styles */
-        .toast {
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-        
-        .toast.show {
-            opacity: 1 !important;
-            transform: translateX(-50%) translateY(0) !important;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            10%, 30%, 50%, 70%, 90% { transform: translateX(-3px); }
-            20%, 40%, 60%, 80% { transform: translateX(3px); }
-        }
-        
-        .shake {
-            animation: shake 0.4s ease-in-out;
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .result-animation {
-            animation: fadeInUp 0.35s ease-out;
-        }
-        
-        /* Clear button hover effect */
-        .clear-btn {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: none;
-            border: none;
-            color: #9ca3af;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            padding: 4px 8px;
-            border-radius: 9999px;
-        }
-        
-        .clear-btn:hover {
-            color: #f87171;
-            background: rgba(248, 113, 113, 0.1);
-        }
-        
-        .clear-btn:active {
-            transform: translateY(-50%) scale(0.95);
-        }
-        
-        /* Input wrapper for positioning clear button */
-        .input-wrapper {
-            position: relative;
-            width: 100%;
-        }
-        
-        .input-wrapper input {
-            width: 100%;
-            padding-right: 45px;
-        }
-        
-        /* URL display styling */
-        .url-display {
-            word-break: break-all;
-            white-space: normal;
-            font-family: 'Courier New', monospace;
-            font-size: 0.75rem;
-            line-height: 1.4;
-            max-height: 80px;
-            overflow-y: auto;
-        }
-        
-        .reason-list {
-            margin-top: 8px;
-            padding-left: 20px;
-        }
-        
-        .reason-list li {
-            font-size: 0.7rem;
-            margin-bottom: 4px;
-        }
-        
-        @media (max-width: 640px) {
-            .url-display {
-                font-size: 0.7rem;
-                max-height: 100px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-
 <body class="bg-zinc-900 min-h-screen">
 
-    <!-- Navbar -->
     <nav class="bg-zinc-700 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6 py-2">
+        <div class="max-w-7xl mx-auto px-6 py-3">
             <div class="flex justify-between items-center">
                 <h1 class="text-2xl font-bold">
                     <i class="fa-solid fa-link text-yellow-400"></i>
                     URL Shortener
                 </h1>
-                <div class="hidden md:flex items-center gap-6">
-                    <a href="/" class="hover:text-yellow-300 transition">Home</a>
-                    <a href="/about" class="hover:text-yellow-300 transition">About</a>
+                <div class="flex gap-6">
+                    <a href="index.html" class="hover:text-yellow-300">Home</a>
+                    <a href="about.html" class="hover:text-yellow-300">About</a>
                 </div>
-                <button id="menu-btn" class="md:hidden text-lg">
-                    <i class="fa-solid fa-bars"></i>
-                </button>
-            </div>
-            <div id="mobile-menu" class="hidden md:hidden mt-4 bg-zinc-800 rounded-xl p-4 space-y-3">
-                <a href="/" class="block hover:text-yellow-300">Home</a>
-                <a href="/about" class="block hover:text-yellow-300">About</a>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
     <main class="flex justify-center items-center px-4 py-12">
-        <div class="w-full max-w-md bg-zinc-700 shadow-xl rounded-2xl p-6 md:p-8">
-            <h2 class="text-3xl font-bold text-center text-white mb-6">
-                Shorten Your URL
-            </h2>
+        <div class="w-full max-w-md bg-zinc-700 shadow-xl rounded-2xl p-6">
+            <h2 class="text-3xl font-bold text-center text-white mb-6">Shorten Your URL</h2>
 
             <div class="space-y-4">
-                <!-- Input Section with Clear Button -->
-                <div class="input-wrapper">
-                    <input
-                        type="text"
-                        id="urlInput"
-                        placeholder="https://example.com/your-long-url"
-                        class="w-full px-4 py-3 border-2 border-zinc-400 rounded-xl outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition bg-zinc-800 text-white placeholder:text-zinc-400"
-                    >
-                    <button 
-                        id="clearInputBtn"
-                        onclick="clearInput()"
-                        class="clear-btn"
-                        title="Clear URL input"
-                    >
-                        <i class="fa-regular fa-circle-xmark text-xl"></i>
-                    </button>
-                </div>
-                
-                <div id="urlHint" class="text-xs mt-1 hidden"></div>
+                <input type="text" id="urlInput" 
+                    placeholder="https://example.com/your-long-url" 
+                    class="w-full px-4 py-3 border-2 border-zinc-400 rounded-xl bg-zinc-800 text-white">
 
-                <!-- Buttons Section -->
-                <div class="flex gap-3">
-                    <button
-                        id="shortenBtn"
-                        onclick="shortenURL()"
-                        class="flex-1 bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700 transition disabled:opacity-60 disabled:cursor-not-allowed">
-                        <i class="fa-solid fa-link mr-2"></i>
-                        Shorten URL
-                    </button>
-                    
-                    <!-- Clear All Button (clears input + result) -->
-                    <button
-                        onclick="clearAll()"
-                        class="bg-gray-600 hover:bg-gray-500 text-white px-5 py-3 rounded-xl font-semibold transition flex items-center gap-2"
-                        title="Clear all (input and result)">
-                        <i class="fa-regular fa-trash-alt"></i>
-                        <span class="hidden sm:inline">Clear All</span>
-                    </button>
-                </div>
+                <button onclick="shortenURL()" id="shortenBtn"
+                    class="w-full bg-blue-600 text-white py-3 rounded-xl font-semibold hover:bg-blue-700">
+                    <i class="fa-solid fa-link mr-2"></i> Shorten URL
+                </button>
             </div>
 
-            <!-- Result Area -->
             <div id="result" class="hidden mt-6"></div>
-
-            <!-- Toast Notification -->
-            <div id="toast" class="toast fixed bottom-6 left-1/2 transform -translate-x-1/2 translate-y-4 bg-green-600 text-white px-5 py-2 rounded-full shadow-lg text-sm font-medium opacity-0 pointer-events-none z-50">
-                <i class="fa-regular fa-copy mr-2"></i>
-                <span id="toastMessage">Copied!</span>
-            </div>
         </div>
     </main>
 
+    <div id="toast" class="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-5 py-2 rounded-full text-sm opacity-0 transition-all duration-300 pointer-events-none z-50">
+        <span id="toastMessage">Copied!</span>
+    </div>
+
     <script>
-        // Mobile menu toggle
-        const menuBtn = document.getElementById("menu-btn");
-        const mobileMenu = document.getElementById("mobile-menu");
-        if (menuBtn) {
-            menuBtn.addEventListener("click", () => {
-                mobileMenu.classList.toggle("hidden");
-            });
-        }
+        const BACKEND_URL = window.location.origin;
 
         function showToast(message, isError = false) {
             const toast = document.getElementById("toast");
             const toastMessage = document.getElementById("toastMessage");
-            if (!toast) return;
-            
             toastMessage.innerText = message;
-            
-            if (isError) {
-                toast.classList.remove("bg-green-600");
-                toast.classList.add("bg-red-600");
-            } else {
-                toast.classList.remove("bg-red-600");
-                toast.classList.add("bg-green-600");
-            }
-            
-            toast.classList.add("show");
-            setTimeout(() => {
-                toast.classList.remove("show");
-            }, 3000);
+            toast.classList.remove("bg-green-600", "bg-red-600");
+            toast.classList.add(isError ? "bg-red-600" : "bg-green-600");
+            toast.classList.add("opacity-100");
+            setTimeout(() => toast.classList.remove("opacity-100"), 3000);
         }
 
-        async function copyToClipboard(text, buttonElement) {
+        async function copyToClipboard(text, btn) {
+            await navigator.clipboard.writeText(text);
+            showToast("Copied!");
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-regular fa-check-circle"></i> Copied!';
+            setTimeout(() => btn.innerHTML = original, 1500);
+        }
+
+        function basicUrlCheck(url) {
+            if (!url.trim()) return { valid: false, reason: "Please enter a URL" };
+            let formatted = url.trim();
+            if (!formatted.startsWith('http')) formatted = 'https://' + formatted;
             try {
-                await navigator.clipboard.writeText(text);
-                showToast("Link copied!");
-                if (buttonElement) {
-                    const originalHTML = buttonElement.innerHTML;
-                    buttonElement.innerHTML = '<i class="fa-regular fa-check-circle"></i> Copied!';
-                    buttonElement.classList.add("bg-green-600");
-                    setTimeout(() => {
-                        buttonElement.innerHTML = originalHTML;
-                        buttonElement.classList.remove("bg-green-600");
-                    }, 1500);
-                }
-            } catch (err) {
-                const textarea = document.createElement("textarea");
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand("copy");
-                document.body.removeChild(textarea);
-                showToast("Copied!");
+                new URL(formatted);
+                return { valid: true, formattedUrl: formatted };
+            } catch {
+                return { valid: false, reason: "Invalid URL format" };
             }
         }
 
-        // CLEAR FUNCTIONS
-        
-        // Clear only the input field
-        function clearInput() {
-            const urlInput = document.getElementById("urlInput");
-            if (urlInput) {
-                urlInput.value = "";
-                urlInput.focus();
-                // Clear validation styling
-                urlInput.classList.remove("border-red-500", "border-green-500");
-                const urlHint = document.getElementById("urlHint");
-                if (urlHint) {
-                    urlHint.classList.add("hidden");
-                }
-                showToast("Input cleared");
-            }
-        }
-        
-        // Clear everything - input field and result
-        function clearAll() {
-            // Clear input
-            const urlInput = document.getElementById("urlInput");
-            if (urlInput) {
-                urlInput.value = "";
-                urlInput.classList.remove("border-red-500", "border-green-500");
-                const urlHint = document.getElementById("urlHint");
-                if (urlHint) {
-                    urlHint.classList.add("hidden");
-                }
-            }
-            
-            // Clear result
-            const resultDiv = document.getElementById("result");
-            if (resultDiv) {
-                resultDiv.classList.add("hidden");
-                resultDiv.innerHTML = "";
-            }
-            
-            showToast("Cleared all");
-            
-            // Focus on input for next URL
-            if (urlInput) {
-                urlInput.focus();
-            }
-        }
-
-        // Basic format validation
-        function basicUrlCheck(urlString) {
-            if (!urlString || urlString.trim() === "") {
-                return { valid: false, reason: "Please enter a URL" };
-            }
-            
-            let url = urlString.trim();
-            
-            if (url.includes(" ")) {
-                return { valid: false, reason: "URL cannot contain spaces" };
-            }
-            
-            let urlWithProtocol = url;
-            if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                urlWithProtocol = 'https://' + url;
-            }
-            
-            try {
-                new URL(urlWithProtocol);
-                return { valid: true, formattedUrl: urlWithProtocol };
-            } catch (error) {
-                return { valid: false, reason: "Invalid URL format. Use: https://example.com" };
-            }
-        }
-
-        const urlInput = document.getElementById("urlInput");
-        const urlHint = document.getElementById("urlHint");
-
-        if (urlInput) {
-            urlInput.addEventListener("input", function() {
-                const value = this.value.trim();
-                this.classList.remove("border-red-500", "border-green-500");
-                if (urlHint) urlHint.classList.add("hidden");
-                
-                if (value === "") return;
-                
-                const check = basicUrlCheck(value);
-                if (check.valid) {
-                    this.classList.add("border-green-500");
-                } else {
-                    this.classList.add("border-red-500");
-                    if (urlHint) {
-                        urlHint.classList.remove("hidden");
-                        urlHint.className = "text-xs mt-1 text-red-400";
-                        urlHint.innerHTML = `<i class="fa-regular fa-circle-exclamation"></i> ${check.reason}`;
-                    }
-                }
-            });
-            
-            urlInput.addEventListener("focus", function() {
-                this.classList.remove("border-red-500", "border-green-500");
-                if (urlHint) urlHint.classList.add("hidden");
-            });
-        }
-
-        function showInputError(message) {
-            if (!urlInput) return;
-            urlInput.classList.add("border-red-500", "ring-2", "ring-red-500", "shake");
-            if (urlHint) {
-                urlHint.classList.remove("hidden");
-                urlHint.className = "text-xs mt-1 text-red-400";
-                urlHint.innerHTML = `<i class="fa-regular fa-circle-exclamation"></i> ${message}`;
-            }
-            setTimeout(() => {
-                urlInput.classList.remove("shake");
-            }, 500);
-            showToast(message, true);
-        }
-
-        function clearResult() {
-            const resultDiv = document.getElementById("result");
-            resultDiv.classList.add("hidden");
-            resultDiv.innerHTML = "";
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        function truncateUrl(url, maxLength = 80) {
-            if (url.length <= maxLength) return url;
-            return url.substring(0, maxLength) + '...';
-        }
-
-        // MAIN SHORTEN FUNCTION
         async function shortenURL() {
+            const urlInput = document.getElementById("urlInput");
             const rawUrl = urlInput.value.trim();
             const resultDiv = document.getElementById("result");
-            
-            if (!rawUrl) {
-                showInputError("Please enter a URL");
-                return;
-            }
-            
-            const basicCheck = basicUrlCheck(rawUrl);
-            if (!basicCheck.valid) {
-                showInputError(basicCheck.reason);
-                resultDiv.classList.remove("hidden");
-                resultDiv.innerHTML = `
-                    <div class="bg-red-900/40 border border-red-500 rounded-xl p-4 result-animation">
-                        <div class="flex items-center gap-2 text-red-400 mb-2">
-                            <i class="fa-solid fa-circle-exclamation text-xl"></i>
-                            <span class="text-red-200 font-medium">Invalid URL Format</span>
-                        </div>
-                        <div class="message-box text-sm text-red-300/90 mb-2 break-all">
-                            "${escapeHtml(truncateUrl(rawUrl, 100))}"
-                        </div>
-                        <div class="text-xs text-red-300/70">
-                            <i class="fa-regular fa-lightbulb"></i> ${basicCheck.reason}
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-            
-            const formattedUrl = basicCheck.formattedUrl;
             const shortenBtn = document.getElementById("shortenBtn");
+
+            const check = basicUrlCheck(rawUrl);
+            if (!check.valid) {
+                showToast(check.reason, true);
+                return;
+            }
+
             shortenBtn.disabled = true;
-            const originalBtnHTML = shortenBtn.innerHTML;
-            shortenBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Checking URL...';
-            
-            urlInput.classList.remove("border-red-500");
-            if (urlHint) urlHint.classList.add("hidden");
-            
+            shortenBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Shortening...';
+
             try {
-                const response = await fetch("/shorten", {
+                const response = await fetch(`${BACKEND_URL}/shorten`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ url: formattedUrl })
+                    body: JSON.stringify({ url: check.formattedUrl })
                 });
-                
+
                 const data = await response.json();
-                
-                if (!response.ok) {
-                    let errorMessage = "URL is invalid or unreachable";
-                    if (data.detail) {
-                        if (typeof data.detail === 'string') {
-                            errorMessage = data.detail;
-                        } else if (Array.isArray(data.detail) && data.detail[0]?.msg) {
-                            errorMessage = data.detail[0].msg;
-                        }
-                    }
-                    throw new Error(errorMessage);
-                }
-                
-                const shortUrl = data.short_url;
-                const copyBtnId = "copyBtn_" + Date.now();
-                
+
+                if (!response.ok) throw new Error(data.detail || "Failed");
+
                 resultDiv.classList.remove("hidden");
                 resultDiv.innerHTML = `
-                    <div class="bg-zinc-600 border border-zinc-400 rounded-xl p-4 result-animation">
-                        <div class="flex items-center gap-2 mb-3 text-green-400 bg-green-900/30 p-2 rounded-lg">
-                            <i class="fa-regular fa-circle-check"></i>
-                            <span class="text-green-300 font-medium">${escapeHtml(data.message || "Success!")}</span>
-                        </div>
-                        <div class="bg-zinc-700 rounded-lg p-3 border border-zinc-500">
-                            <p class="text-xs text-zinc-300 mb-2">Shortened link:</p>
-                            <div class="flex flex-col sm:flex-row gap-2">
-                                <code class="url-display flex-1 bg-zinc-800 rounded-lg px-3 py-2 text-blue-400">${escapeHtml(shortUrl)}</code>
-                                <button id="${copyBtnId}" onclick="copyToClipboard('${escapeHtml(shortUrl)}', this)" class="bg-gray-600 hover:bg-gray-500 text-white px-4 py-2 rounded-lg transition flex items-center justify-center gap-2 whitespace-nowrap">
-                                    <i class="fa-regular fa-copy"></i> Copy
-                                </button>
-                            </div>
-                        </div>
-                        <div class="mt-3 text-right">
-                            <button onclick="clearResult()" class="text-xs text-zinc-400 hover:text-zinc-200">Clear ×</button>
+                    <div class="bg-zinc-600 rounded-xl p-4 mt-4">
+                        <p class="text-green-400 mb-2">✅ ${data.message}</p>
+                        <div class="flex gap-2 flex-wrap">
+                            <code class="bg-zinc-800 px-3 py-2 rounded text-blue-400 break-all flex-1">${data.short_url}</code>
+                            <button onclick="copyToClipboard('${data.short_url}', this)" 
+                                class="bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded">Copy</button>
                         </div>
                     </div>
                 `;
-                showToast("URL shortened successfully!");
-                
+                showToast("URL shortened!");
             } catch (error) {
-                const errorMsg = error.message || "URL is invalid or unreachable";
-                
-                resultDiv.classList.remove("hidden");
-                resultDiv.innerHTML = `
-                    <div class="bg-red-900/40 border border-red-500 rounded-xl p-4 result-animation">
-                        <div class="flex items-center gap-2 text-red-400 mb-3">
-                            <i class="fa-solid fa-circle-exclamation text-xl"></i>
-                            <span class="text-red-200 font-medium">URL Invalid or Not Reachable</span>
-                        </div>
-                        <div class="bg-red-950/30 rounded-lg p-3 mb-3 scroll-long-text">
-                            <code class="break-long-url text-red-300 text-xs font-mono break-all">
-                                ${escapeHtml(truncateUrl(formattedUrl, 120))}
-                            </code>
-                        </div>
-                        <div class="message-box text-sm text-red-300/90 mb-3 p-2 bg-red-950/20 rounded-lg break-words">
-                            <i class="fa-regular fa-circle-info mr-1"></i>
-                            ${escapeHtml(errorMsg)}
-                        </div>
-                        <div class="text-xs text-red-400/80 mt-2">
-                            <p class="font-medium mb-1"><i class="fa-regular fa-lightbulb"></i> Possible reasons:</p>
-                            <ul class="reason-list">
-                                <li>• Website domain does not exist</li>
-                                <li>• Website is currently down or unreachable</li>
-                                <li>• Invalid URL structure</li>
-                                <li>• Connection timeout or network issue</li>
-                            </ul>
-                        </div>
-                        <div class="mt-3 text-right">
-                            <button onclick="clearResult()" class="text-xs text-red-400 hover:text-red-200 transition">Clear ×</button>
-                        </div>
-                    </div>
-                `;
-                showToast(errorMsg, true);
+                showToast(error.message, true);
             } finally {
                 shortenBtn.disabled = false;
-                shortenBtn.innerHTML = originalBtnHTML;
+                shortenBtn.innerHTML = '<i class="fa-solid fa-link mr-2"></i> Shorten URL';
             }
         }
-        
-        // Enter key support
-        if (urlInput) {
-            urlInput.addEventListener("keypress", (e) => {
-                if (e.key === "Enter") shortenURL();
-            });
-        }
-        
-        // Example placeholder rotation
-        const examples = ["https://github.com", "https://stackoverflow.com", "https://google.com", "https://fastapi.tiangolo.com"];
-        let idx = 0;
-        setInterval(() => {
-            if (urlInput && urlInput.value === "" && document.activeElement !== urlInput) {
-                urlInput.placeholder = `e.g., ${examples[idx % examples.length]}`;
-                idx++;
-            }
-        }, 4000);
+
+        document.getElementById("urlInput")?.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") shortenURL();
+        });
     </script>
 </body>
 </html>
